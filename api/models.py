@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from . import manager
 
 class CustomUser(AbstractUser):
     BLOOD_GROUP_CHOICES = (
@@ -37,6 +38,11 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name", "blood_group", "phone_number"]
 
+    objects = manager.CustomUserManager()
 
     def __str__(self):
         return f"{self.email} ({self.blood_group})"
+    
+class Verification(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    token = models.CharField(max_length=100)
