@@ -1,7 +1,9 @@
 from django.core.mail import send_mail
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
 from . import serializers
 from . import models
 import uuid
@@ -61,4 +63,26 @@ def verification_view(request, token):
     except models.CustomUser.DoesNotExist:
         return Response({
             "error" : "User does not exist."
+        })
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_view(request):
+    try:
+        refresh = request.data.get('refresh')
+
+        if not refresh:
+            return Response({
+                "error" : "Refresh token is required."
+            })
+
+        token = RefreshToken(refresh)
+        token.blacklist()
+        return Response({
+            "success" : "Logout successful."
+        })
+    
+    except:
+        return Response({
+            "error" : "Invalid token."
         })
