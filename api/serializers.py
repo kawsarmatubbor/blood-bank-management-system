@@ -67,3 +67,36 @@ class RegistrationSerializer(serializers.ModelSerializer):
             profile_picture=validated_data.get('profile_picture')
         )
         return user
+    
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.CustomUser
+        fields = [
+            'id',
+            'email', 
+            'first_name',
+            'last_name',
+            'description', 
+            'gender',
+            'dob',
+            'blood_group', 
+            'present_address', 
+            'permanent_address', 
+            'phone_number',
+            'donor',
+            'profile_picture',
+            'is_active',
+        ]
+        extra_kwargs = {
+            'email' : {'read_only' : True},
+            'first_name' : {'required' : True},
+            'last_name' : {'required' : True},
+            'description' : {'required' : False},
+            'gender' : {'required' : False},
+            'dob' : {'required' : False},
+            'blood_group' : {'required' : True},
+            'present_address' : {'required' : False},
+            'permanent_address' : {'required' : False},
+            'phone_number' : {'required' : True},
+            'is_active' : {'read_only' : True},
+        }
