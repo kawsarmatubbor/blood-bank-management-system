@@ -2,7 +2,7 @@ from django.core.mail import send_mail
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.tokens import RefreshToken
 from . import serializers
 from . import models
@@ -102,3 +102,47 @@ class ProfileDetailViewSet(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+    
+class BloodRequestViewSet(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        blood_requests = models.BloodRequest.objects.filter(is_active = True)
+        serializer = serializers.BloodRequestSerializer(blood_requests, many = True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = serializers.BloodRequestSerializer(data = request.data)
+        if serializer.is_valid():
+            user = request.user
+            serializer.save(patient = user, blood_group = user.blood_group)
+            return Response(serializer.data)
+        return Response(serializer.errors)
+    
+class BloodRequestDetailViewSet(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request, pk):
+        try:
+            blood_request = models.BloodRequest.objects.get(pk = pk)
+            serializer = serializers.BloodRequestSerializer(blood_request)
+            return Response(serializer.data)
+        
+        except models.BloodRequest.DoesNotExist:
+            return Response({
+                "error" : "Request does not exist."
+            })
+        
+    def put(self, request, pk):
+        try:
+            blood_request = models.BloodRequest.objects.get(pk = pk)
+            serializer = serializers.BloodRequestSerializer(blood_request, data = request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors)
+        
+        except models.BloodRequest.DoesNotExist:
+            return Response({
+                "error" : "Request does not exist."
+            })

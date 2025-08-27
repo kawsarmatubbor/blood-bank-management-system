@@ -100,3 +100,22 @@ class ProfileSerializer(serializers.ModelSerializer):
             'phone_number' : {'required' : True},
             'is_active' : {'read_only' : True},
         }
+
+class BloodRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.BloodRequest
+        fields = [
+            'id', 
+            'patient', 
+            'blood_group', 
+            'quantity', 
+            'description', 
+            'location', 
+            'date_time', 
+            'is_active'
+        ]
+        extra_kwargs = {
+            'patient' : {'read_only' : True},
+            'blood_group' : {'read_only' : True},
+            'description' : {'required' : False},
+        }

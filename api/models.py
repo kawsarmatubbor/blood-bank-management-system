@@ -46,3 +46,22 @@ class CustomUser(AbstractUser):
 class Verification(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     token = models.CharField(max_length=100)
+
+class BloodRequest(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('fulfilled', 'Fulfilled'),
+    )
+    patient = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    blood_group = models.CharField(max_length=3)
+    quantity = models.PositiveIntegerField(default=1)
+    description = models.TextField(blank=True, null=True)
+    location = models.TextField()
+    date_time = models.DateTimeField()
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.patient} ({self.blood_group})"
