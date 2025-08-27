@@ -14,4 +14,6 @@ urlpatterns = [
     path('profile/', views.ProfileDetailViewSet.as_view(), name='profile'),
     path('blood-requests/', views.BloodRequestViewSet.as_view(), name='blood-request'),
     path('blood-requests/<int:pk>/', views.BloodRequestDetailViewSet.as_view(), name='blood-request-detail'),
+    path('donations/', views.DonationViewSet.as_view(), name='donations'),
+    path('donations/<int:pk>', views.DonationDetailViewSet.as_view(), name='donation-detail'),
 ]

@@ -146,3 +146,30 @@ class BloodRequestDetailViewSet(APIView):
             return Response({
                 "error" : "Request does not exist."
             })
+        
+class DonationViewSet(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        donations = models.Donation.objects.filter(donor = request.user)
+        serializer = serializers.DonationSerializer(donations, many = True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = serializers.DonationSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+    
+class DonationDetailViewSet(APIView):
+    def get(self, request, pk):
+        try:
+            donation = models.Donation.objects.get(pk = pk, donor = request.user)
+            serializer = serializers.DonationSerializer(donation)
+            return Response(serializer.data)
+        
+        except models.Donation.DoesNotExist:
+            return Response({
+                "error" : "Donation not found."
+            })

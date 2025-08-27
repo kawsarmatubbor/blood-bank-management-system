@@ -119,3 +119,14 @@ class BloodRequestSerializer(serializers.ModelSerializer):
             'blood_group' : {'read_only' : True},
             'description' : {'required' : False},
         }
+
+class DonationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Donation
+        fields = [
+            'id', 
+            'blood_request', 
+            'donor', 
+            'status', 
+            'is_active'
+        ]

@@ -59,9 +59,25 @@ class BloodRequest(models.Model):
     description = models.TextField(blank=True, null=True)
     location = models.TextField()
     date_time = models.DateTimeField()
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pending')
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.patient} ({self.blood_group})"
+    
+class Donation(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('fulfilled', 'Fulfilled'),
+    )
+    blood_request = models.ForeignKey(BloodRequest, on_delete=models.CASCADE)
+    donor = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pending')
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.donor} > {self.blood_request.patient}"
