@@ -102,6 +102,12 @@ class ProfileDetailViewSet(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+
+@api_view(['GET'])
+def donors_view(request):
+    donors = models.CustomUser.objects.filter(is_donor = True)
+    serializer = serializers.DonorsSerializer(donors, many = True)
+    return Response(serializer.data)
     
 class BloodRequestViewSet(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]

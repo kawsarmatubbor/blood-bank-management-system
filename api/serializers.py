@@ -21,12 +21,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'last_name',
             'description', 
             'gender',
-            'dob',
+            'date_of_birth',
             'blood_group', 
             'present_address', 
             'permanent_address', 
             'phone_number',
-            'donor',
+            'is_donor',
             'profile_picture',
             'is_active',
             'password_1',
@@ -38,7 +38,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'last_name' : {'required' : True},
             'description' : {'required' : False},
             'gender' : {'required' : False},
-            'dob' : {'required' : False},
+            'date_of_birth' : {'required' : False},
             'blood_group' : {'required' : True},
             'present_address' : {'required' : False},
             'permanent_address' : {'required' : False},
@@ -58,11 +58,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
             last_name = validated_data['last_name'],
             description = validated_data.get('description', ''),
             gender = validated_data.get('gender', ''),
-            dob = validated_data.get('dob', None),
+            date_of_birth = validated_data.get('date_of_birth', None),
             blood_group = validated_data['blood_group'],
             present_address = validated_data.get('present_address', ''),
             permanent_address = validated_data.get('permanent_address', ''),
             phone_number = validated_data['phone_number'],
+            is_donor=validated_data.get('is_donor', False),  
             password = validated_data['password_1'],
             profile_picture=validated_data.get('profile_picture')
         )
@@ -78,12 +79,12 @@ class ProfileSerializer(serializers.ModelSerializer):
             'last_name',
             'description', 
             'gender',
-            'dob',
+            'date_of_birth',
             'blood_group', 
             'present_address', 
             'permanent_address', 
             'phone_number',
-            'donor',
+            'is_donor',
             'profile_picture',
             'is_active',
         ]
@@ -93,13 +94,26 @@ class ProfileSerializer(serializers.ModelSerializer):
             'last_name' : {'required' : True},
             'description' : {'required' : False},
             'gender' : {'required' : False},
-            'dob' : {'required' : False},
+            'date_of_birth' : {'required' : False},
             'blood_group' : {'required' : True},
             'present_address' : {'required' : False},
             'permanent_address' : {'required' : False},
             'phone_number' : {'required' : True},
             'is_active' : {'read_only' : True},
         }
+
+class DonorsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.CustomUser
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'description', 
+            'blood_group', 
+            'present_address', 
+            'phone_number',
+        ]
 
 class BloodRequestSerializer(serializers.ModelSerializer):
     class Meta:
